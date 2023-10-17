@@ -36,108 +36,45 @@ namespace UserManagementAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers([FromQuery] UserParameters parameters)
+        public async Task<IActionResult> GetUsers([FromQuery] UserParameters parameters)
         {
-            try
-            {
-                return Ok(await _userService.GetUsers(parameters));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            var users = await _userService.GetUsers(parameters);
+            return Ok(users);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {
-            try
-            {
-                var user = await _userRetrievalService.GetUserByIdAsync(id);
-
-                if (user == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            var user = await _userRetrievalService.GetUserByIdAsync(id);
+            return Ok(user);
         }
 
         [HttpPost("assignRole")]
         public async Task<IActionResult> AssignRoleToUser([FromBody] UserRoleDto userRole)
         {
-            try
-            {
-                await _userRoleService.AssignRoleToUserAsync(userRole);
-                return NoContent();
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (BadRequestException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _userRoleService.AssignRoleToUserAsync(userRole);
+            return NoContent();
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult<User>> CreateUser([FromBody] CreateUserDto userDto)
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserDto userDto)
         {
-            try
-            {
-                var user = await _userCreationService.CreateUser(userDto);
-                return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var user = await _userCreationService.CreateUser(userDto);
+            return Ok(user);
         }
 
         [HttpPut("update/{id}")]
-        public async Task<ActionResult<UpdateUserDto>> UpdateUser(int id, [FromBody] UpdateUserDto userDto)
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserDto userDto)
         {
-            try
-            {
-                var updatedUser = await _userUpdateService.UpdateUser(id, userDto);
-
-                if (updatedUser == null)
-                {
-                    return NotFound("Пользователь не найден");
-                }
-
-                return Ok(updatedUser);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var updatedUser = await _userUpdateService.UpdateUser(id, userDto);
+            return Ok(updatedUser);
         }
 
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            try
-            {
-                var user = await _userRetrievalService.GetUserByIdAsync(id);
-                if (user == null)
-                {
-                    return NotFound("Пользователь не найден");
-                }
-
-                await _userDeletionService.DeleteUser(id);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _userDeletionService.DeleteUser(id);
+            return NoContent();
         }
     }
 }

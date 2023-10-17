@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using UserManagementAPI.Dto;
+using UserManagementAPI.Exceptions;
 using UserManagementAPI.Persistence;
 using UserManagementAPI.Services.Interfaces;
 
@@ -22,12 +23,7 @@ namespace UserManagementAPI.Services
             var user = await _context.Users.Include(u => u.UserRoles)
                                             .ThenInclude(ur => ur.Role)
                                             .FirstOrDefaultAsync(u => u.Id == id);
-            if (user == null)
-            {
-                return null;
-            }
-
-            return _mapper.Map<UserDto>(user);
+            return user == null ? throw new UserNotFoundException("Пользователь не найден") : _mapper.Map<UserDto>(user);
         }
     }
 }

@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using UserManagementAPI.Dto;
-using UserManagementAPI.Models;
+using UserManagementAPI.Exceptions;
 using UserManagementAPI.Persistence;
 using UserManagementAPI.Services.Interfaces;
 
@@ -9,10 +10,12 @@ namespace UserManagementAPI.Services
     public class UserUpdateService : IUserUpdateService
     {
         private readonly UserManagementDbContext _userManagementDbContext;
+        private readonly IMapper _mapper;
 
-        public UserUpdateService(UserManagementDbContext userManagementDbContext)
+        public UserUpdateService(UserManagementDbContext userManagementDbContext, IMapper mapper)
         {
             _userManagementDbContext = userManagementDbContext;
+            _mapper = mapper;
         }
 
         public async Task<UpdateUserDto> UpdateUser(int id, UpdateUserDto userDto)
@@ -20,29 +23,20 @@ namespace UserManagementAPI.Services
             var existingUser = await _userManagementDbContext.Users.FirstOrDefaultAsync(u => u.Email == userDto.Email && u.Id != id);
             if (existingUser != null)
             {
-                throw new Exception("Email уже существует");
+                throw new EmailAlreadyExistsException("Email уже существует");
             }
 
             var user = await _userManagementDbContext.Users.FindAsync(id);
             if (user == null)
             {
-                return null;
+                throw new UserNotFoundException("Пользователь не найден");
             }
 
-            user.Name = userDto.Name;
-            user.Age = userDto.Age;
-            user.Email = userDto.Email;
+            _mapper.Map(userDto, user);
 
             await _userManagementDbContext.SaveChangesAsync();
 
-            var updatedUser = new UpdateUserDto
-            {
-                Name = user.Name,
-                Age = user.Age,
-                Email = user.Email
-            };
-
-            return updatedUser;
+            return _mapper.Map<UpdateUserDto>(user);
         }
     }
 }

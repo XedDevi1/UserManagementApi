@@ -7,6 +7,7 @@ using FluentValidation;
 using UserManagementAPI.Dto;
 using UserManagementAPI.Validators;
 using FluentValidation.AspNetCore;
+using UserManagementAPI.Middlewares;
 
 namespace UserManagementAPI
 {
@@ -48,6 +49,8 @@ namespace UserManagementAPI
             }
 
             app.UseHttpsRedirection();
+
+            app.UseMiddleware<ErrorHandlingMiddleware>();
 
             app.UseAuthorization();
 

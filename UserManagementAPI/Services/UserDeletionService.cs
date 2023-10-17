@@ -1,4 +1,5 @@
-﻿using UserManagementAPI.Persistence;
+﻿using UserManagementAPI.Exceptions;
+using UserManagementAPI.Persistence;
 using UserManagementAPI.Services.Interfaces;
 
 namespace UserManagementAPI.Services
@@ -17,7 +18,7 @@ namespace UserManagementAPI.Services
             var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
-                throw new Exception("Пользователь не найден");
+                throw new UserNotFoundException("Пользователь не найден");
             }
 
             _context.Users.Remove(user);

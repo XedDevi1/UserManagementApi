@@ -22,7 +22,7 @@ namespace UserManagementAPI.Services
 
             if (user == null)
             {
-                throw new NotFoundException("Пользователь не найден");
+                throw new UserNotFoundException("Пользователь не найден");
             }
 
             foreach (var roleId in userRoles.RoleIds)
@@ -31,7 +31,7 @@ namespace UserManagementAPI.Services
 
                 if (role == null)
                 {
-                    throw new NotFoundException($"Роль с ID {roleId} не найдена");
+                    throw new UserNotFoundException($"Роль с ID {roleId} не найдена");
                 }
 
                 if (user.UserRoles != null && user.UserRoles.Any(ur => ur.RoleId == roleId))

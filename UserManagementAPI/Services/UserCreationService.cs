@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using UserManagementAPI.Dto;
+using UserManagementAPI.Exceptions;
 using UserManagementAPI.Models;
 using UserManagementAPI.Persistence;
 using UserManagementAPI.Services.Interfaces;
@@ -9,26 +11,23 @@ namespace UserManagementAPI.Services
     public class UserCreationService : IUserCreationService
     {
         private readonly UserManagementDbContext _userManagementDbContext;
+        private readonly IMapper _mapper;
 
-        public UserCreationService(UserManagementDbContext userManagementDbContext)
+        public UserCreationService(UserManagementDbContext userManagementDbContext, IMapper mapper)
         {
             _userManagementDbContext = userManagementDbContext;
+            _mapper = mapper;
         }
 
-        public async Task<User> CreateUser(CreateUserDto userDto)
+        public async Task<CreateUserDto> CreateUser(CreateUserDto userDto)
         {
             var existingUser = await _userManagementDbContext.Users.FirstOrDefaultAsync(u => u.Email == userDto.Email);
             if (existingUser != null)
             {
-                throw new Exception("Email уже существует");
+                throw new EmailAlreadyExistsException("Email уже существует");
             }
 
-            var user = new User
-            {
-                Name = userDto.Name,
-                Age = userDto.Age,
-                Email = userDto.Email
-            };
+            var user = _mapper.Map<User>(userDto);
 
             _userManagementDbContext.Users.Add(user);
             await _userManagementDbContext.SaveChangesAsync();
@@ -41,7 +40,7 @@ namespace UserManagementAPI.Services
                 await _userManagementDbContext.SaveChangesAsync();
             }
 
-            return user;
+            return _mapper.Map<CreateUserDto>(user);
         }
     }
 }

@@ -5,7 +5,6 @@ namespace UserManagementAPI.Services.Interfaces
 {
     public interface IUserCreationService
     {
-        Task<User> CreateUser(CreateUserDto userDto);
+        Task<CreateUserDto> CreateUser(CreateUserDto userDto);
     }
-
 }

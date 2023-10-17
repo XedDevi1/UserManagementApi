@@ -11,6 +11,10 @@ namespace UserManagementAPI.Helpers
             CreateMap<Role, RoleDto>();
             CreateMap<User, UserDto>()
                 .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.UserRoles.Select(ur => ur.Role)));
+            CreateMap<CreateUserDto, User>();
+            CreateMap<User, CreateUserDto>();
+            CreateMap<UpdateUserDto, User>();
+            CreateMap<User, UpdateUserDto>();
         }
     }
 }
