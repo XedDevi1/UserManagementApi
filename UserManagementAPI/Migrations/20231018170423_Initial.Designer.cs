@@ -11,7 +11,7 @@ using UserManagementAPI.Persistence;
 namespace UserManagementAPI.Migrations
 {
     [DbContext(typeof(UserManagementDbContext))]
-    [Migration("20231007112746_Initial")]
+    [Migration("20231018170423_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

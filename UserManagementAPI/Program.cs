@@ -11,7 +11,7 @@ using UserManagementAPI.Middlewares;
 
 namespace UserManagementAPI
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {

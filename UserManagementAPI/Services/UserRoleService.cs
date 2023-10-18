@@ -16,16 +16,16 @@ namespace UserManagementAPI.Services
             _context = context;
         }
 
-        public async Task AssignRoleToUserAsync(UserRoleDto userRoles)
+        public async Task AssignRoleToUserAsync(UserRoleDto userRole)
         {
-            var user = await _context.Users.Include(u => u.UserRoles).FirstOrDefaultAsync(u => u.Id == userRoles.UserId);
+            var user = await _context.Users.Include(u => u.UserRoles).FirstOrDefaultAsync(u => u.Id == userRole.UserId);
 
             if (user == null)
             {
                 throw new UserNotFoundException("Пользователь не найден");
             }
 
-            foreach (var roleId in userRoles.RoleIds)
+            foreach (var roleId in userRole.RoleIds)
             {
                 var role = await _context.Roles.FindAsync(roleId);
 
@@ -39,7 +39,7 @@ namespace UserManagementAPI.Services
                     throw new BadRequestException($"Пользователь уже имеет роль с ID {roleId}");
                 }
 
-                var newUserRole = new UserRole { UserId = userRoles.UserId, RoleId = roleId };
+                var newUserRole = new UserRole { UserId = userRole.UserId, RoleId = roleId };
                 _context.UserRoles.Add(newUserRole);
             }
 
