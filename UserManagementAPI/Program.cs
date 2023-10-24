@@ -33,11 +33,6 @@ namespace UserManagementAPI
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
             builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IUserRetrievalService, UserRetrievalService>();
-            builder.Services.AddScoped<IUserRoleService, UserRoleService>();
-            builder.Services.AddScoped<IUserCreationService, UserCreationService>();
-            builder.Services.AddScoped<IUserUpdateService, UserUpdateService>();
-            builder.Services.AddScoped<IUserDeletionService, UserDeletionService>();
 
             var app = builder.Build();
 

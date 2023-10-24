@@ -19,20 +19,10 @@ namespace UserManagementAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly IUserRetrievalService _userRetrievalService;
-        private readonly IUserRoleService _userRoleService;
-        private readonly IUserCreationService _userCreationService;
-        private readonly IUserUpdateService _userUpdateService;
-        private readonly IUserDeletionService _userDeletionService;
 
-        public UserController(UserManagementDbContext userManagementDbContext, IUserService userService, IUserRetrievalService userRetrievalService, IUserRoleService userRoleService, IUserCreationService userCreationService, IUserUpdateService userUpdateService, IUserDeletionService userDeletionService)
+        public UserController(IUserService userService)
         {
             _userService = userService;
-            _userRetrievalService = userRetrievalService;
-            _userRoleService = userRoleService;
-            _userCreationService = userCreationService;
-            _userUpdateService = userUpdateService;
-            _userDeletionService = userDeletionService;
         }
 
         [HttpGet]
@@ -45,35 +35,35 @@ namespace UserManagementAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {
-            var user = await _userRetrievalService.GetUserByIdAsync(id);
+            var user = await _userService.GetUserByIdAsync(id);
             return Ok(user);
         }
 
         [HttpPost("assignRole")]
         public async Task<IActionResult> AssignRoleToUser([FromBody] UserRoleDto userRole)
         {
-            await _userRoleService.AssignRoleToUserAsync(userRole);
+            await _userService.AssignRoleToUserAsync(userRole);
             return NoContent();
         }
 
         [HttpPost("create")]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserDto userDto)
         {
-            var user = await _userCreationService.CreateUser(userDto);
+            var user = await _userService.CreateUser(userDto);
             return Ok(user);
         }
 
         [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserDto userDto)
         {
-            var updatedUser = await _userUpdateService.UpdateUser(id, userDto);
+            var updatedUser = await _userService.UpdateUser(id, userDto);
             return Ok(updatedUser);
         }
 
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            await _userDeletionService.DeleteUser(id);
+            await _userService.DeleteUser(id);
             return NoContent();
         }
     }
